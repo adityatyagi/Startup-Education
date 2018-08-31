@@ -1,3 +1,4 @@
+import { Product } from 'src/app/models/product';
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
 
@@ -15,7 +16,7 @@ export class ProductService {
 
   // fetch all the products for product list
   getAll() {
-    return this.db.list('/products');
+    return this.db.list<Product>('/products');
   }
 
   // get a particular product
@@ -24,7 +25,7 @@ export class ProductService {
   }
 
   // updating product
-  update(productId, product){
+  update(productId, product) {
     this.db.object('/products/' + productId).update(product);
   }
 

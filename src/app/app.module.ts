@@ -11,6 +11,7 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+// import { DataTableModule } from 'angular-4-data-table';
 
 
 import { BsNavbarComponent } from './bs-navbar/bs-navbar.component';
@@ -28,6 +29,7 @@ import { UserService } from './user.service';
 import { ProductFormComponent } from './admin/product-form/product-form.component';
 import { FormsModule } from '@angular/forms';
 import { CustomFormsModule } from 'ng2-validation';
+import { DataTableModule } from './data-table';
 
 @NgModule({
   declarations: [
@@ -51,6 +53,7 @@ import { CustomFormsModule } from 'ng2-validation';
     AngularFireAuthModule,
     FormsModule,
     CustomFormsModule,
+    DataTableModule,
     NgbModule.forRoot(),
     RouterModule.forRoot([
 

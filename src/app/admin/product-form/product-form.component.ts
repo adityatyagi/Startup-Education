@@ -18,7 +18,7 @@ export class ProductFormComponent implements OnInit {
 
   // we should have a blank object - useful when we are adding a new product, because when we are adding a new product, we are not going to get an object from the DB
   product = {};
-  
+
   id;
 
   constructor(private categoryService: CategoryService, private productService: ProductService, private router: Router, private route: ActivatedRoute) {
@@ -26,7 +26,6 @@ export class ProductFormComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id');
     if (this.id) {
         this.productService.get(this.id).valueChanges().subscribe(item => {
-          console.log(JSON.stringify(item));
           this.product = item;
         });
 
@@ -48,8 +47,7 @@ export class ProductFormComponent implements OnInit {
   save(product) {
     if (this.id) {
       this.productService.update(this.id, product);
-    }
-    else {
+    } else {
       this.productService.create(product);
     }
     this.router.navigate(['/admin/products']);
