@@ -30,6 +30,8 @@ import { ProductFormComponent } from './admin/product-form/product-form.componen
 import { FormsModule } from '@angular/forms';
 import { CustomFormsModule } from 'ng2-validation';
 import { DataTableModule } from './data-table';
+import { ProductFilterComponent } from './products/product-filter/product-filter.component';
+import { ProductCardComponent } from './product-card/product-card.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,9 @@ import { DataTableModule } from './data-table';
     AdminProductsComponent,
     AdminOrdersComponent,
     LoginComponent,
-    ProductFormComponent
+    ProductFormComponent,
+    ProductFilterComponent,
+    ProductCardComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +62,7 @@ import { DataTableModule } from './data-table';
     RouterModule.forRoot([
 
       // routes for anonymous users
-      {path: '', component: HomeComponent },
+      {path: '', component: ProductsComponent },
       {path: 'products', component: ProductsComponent },
       {path: 'shopping-cart', component: ShoppingCartComponent },
       {path: 'login', component: LoginComponent },
