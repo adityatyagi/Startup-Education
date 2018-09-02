@@ -1,3 +1,4 @@
+import { ShoppingCart } from './../models/shopping-cart';
 import { ShoppingCartService } from './../shopping-cart.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, OnDestroy } from '@angular/core';
@@ -13,7 +14,7 @@ import { Product } from '../models/product';
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
-export class ProductsComponent implements OnInit, OnDestroy {
+export class ProductsComponent implements OnInit {
   products$: AngularFireList<{}>;
   // categories$: AngularFireList<{}>; //  list of objects
   // categories;
@@ -22,21 +23,15 @@ export class ProductsComponent implements OnInit, OnDestroy {
   category: string; // used for highlighting the currently selected category
   products:  Product[] = [];
   filteredProducts: Product[];
-  cart: any;
-  subscription: Subscription;
+  cart$: Observable<ShoppingCart>;
 
-  constructor(productService: ProductService, route: ActivatedRoute, private shoppingCartService: ShoppingCartService) {
-    this.products$ = productService.getAll();
+  constructor(private productService: ProductService, private route: ActivatedRoute, private shoppingCartService: ShoppingCartService) {
 
-    this.observaleDataProducts = this.products$.snapshotChanges().pipe(
-      map(items => {
-        return items.map(a => {
-          const value = a.payload.val();
-          const key = a.payload.key;
-          return {key, ...value};
-        });
-      })
-    );
+  }
+
+  async ngOnInit() {
+    this.cart$ = await this.shoppingCartService.getCart();
+    this.populateProducts();
 
     // sending the data in array format
     // this.observaleDataProducts.subscribe(data => {
@@ -49,29 +44,34 @@ export class ProductsComponent implements OnInit, OnDestroy {
     // this.filteredProducts = (this.category) ? this.products.filter(p => p.category === this.category) : this.products;
     // });
     // });
+  }
+
+  private populateProducts() {
+    this.products$ = this.productService.getAll();
+
+    this.observaleDataProducts = this.products$.snapshotChanges().pipe(
+      map(items => {
+        return items.map(a => {
+          const value = a.payload.val();
+          const key = a.payload.key;
+          return {key, ...value};
+        });
+      })
+    );
 
     this.observaleDataProducts.pipe(
       switchMap(data => {
         this.products = data;
-        return route.queryParamMap;
+        return this.route.queryParamMap;
       })
     ).subscribe(params => {
       // initialising the category field, thus using it in the components - product-filter and products
       this.category = params.get('category');
-      this.filteredProducts = (this.category) ? this.products.filter(p => p.category === this.category) : this.products;
+      this.applyFilter();
     });
   }
 
-  async ngOnInit() {
-    const cart = await this.shoppingCartService.getCart();
-    this.subscription = cart.subscribe(cart1 => {
-      this.cart = cart1;
-      // console.log('Entire Cart ' + JSON.stringify(this.cart));
-    });
+  private applyFilter() {
+    this.filteredProducts = (this.category) ? this.products.filter(p => p.category === this.category) : this.products;
   }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-
 }
