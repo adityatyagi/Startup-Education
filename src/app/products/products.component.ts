@@ -1,8 +1,9 @@
+import { ShoppingCartService } from './../shopping-cart.service';
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ProductService } from '../product.service';
 import { CategoryService } from '../category.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { AngularFireList } from 'angularfire2/database';
 import { Product } from '../models/product';
@@ -12,7 +13,7 @@ import { Product } from '../models/product';
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
-export class ProductsComponent {
+export class ProductsComponent implements OnInit, OnDestroy {
   products$: AngularFireList<{}>;
   // categories$: AngularFireList<{}>; //  list of objects
   // categories;
@@ -21,8 +22,10 @@ export class ProductsComponent {
   category: string; // used for highlighting the currently selected category
   products:  Product[] = [];
   filteredProducts: Product[];
+  cart: any;
+  subscription: Subscription;
 
-  constructor(productService: ProductService, route: ActivatedRoute) {
+  constructor(productService: ProductService, route: ActivatedRoute, private shoppingCartService: ShoppingCartService) {
     this.products$ = productService.getAll();
 
     this.observaleDataProducts = this.products$.snapshotChanges().pipe(
@@ -57,6 +60,18 @@ export class ProductsComponent {
       this.category = params.get('category');
       this.filteredProducts = (this.category) ? this.products.filter(p => p.category === this.category) : this.products;
     });
+  }
+
+  async ngOnInit() {
+    const cart = await this.shoppingCartService.getCart();
+    this.subscription = cart.subscribe(cart1 => {
+      this.cart = cart1;
+      // console.log('Entire Cart ' + JSON.stringify(this.cart));
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
 }
