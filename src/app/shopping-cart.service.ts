@@ -12,7 +12,7 @@ export class ShoppingCartService {
 
   constructor(private db: AngularFireDatabase) { }
 
-  // create cart - priavte because we dont want anyone to call this method from outside
+  // create cart - private because we dont want anyone to call this method from outside
   private create() {
     return this.db.list('/shopping-carts').push({
       dateCreated: new Date().getTime()
@@ -24,7 +24,13 @@ export class ShoppingCartService {
     const cartId = await this.getOrCreateCartId();
     // send object of user's cart identified by cartId containg the items sub-object, which have a list of items
     return this.db.object('/shopping-carts/' + cartId).valueChanges().pipe(
-      map(x => new ShoppingCart(x['items']))
+      map(x => {
+        if (x) {
+          return new ShoppingCart(x['items']);
+        } else {
+          return new ShoppingCart(x);
+        }
+      })
     );
   }
 
@@ -84,7 +90,12 @@ export class ShoppingCartService {
        item.pipe(take(1)).subscribe(x => {
          if (x) {
            // console.log('product is present, increase quantity:' + JSON.stringify(y['quantity']));
-           item$.update({ quantity: x['quantity'] + change});
+           const quantity = x['quantity'] + change;
+           if (quantity === 0) {
+            item$.remove();
+           } else {
+            item$.update({ quantity: quantity});
+           }
          } else {
            // console.log('add product to items in cart');
            item$.set({
@@ -93,6 +104,11 @@ export class ShoppingCartService {
            });
          }
        });
+  }
+
+  async clearCart() {
+    const cartId = await this.getOrCreateCartId();
+    this.db.object('/shopping-carts/' + cartId + '/items').remove();
   }
 
 }
