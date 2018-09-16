@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { ProductService } from '../../product.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import {take} from 'rxjs/operators';
+import { Product } from '../../models/product';
 
 @Component({
   selector: 'app-product-form',
@@ -17,7 +18,7 @@ export class ProductFormComponent implements OnInit {
   categories: Observable<any[]>;
 
   // we should have a blank object - useful when we are adding a new product, because when we are adding a new product, we are not going to get an object from the DB
-  product = {};
+  product: any = {};
 
   id;
 

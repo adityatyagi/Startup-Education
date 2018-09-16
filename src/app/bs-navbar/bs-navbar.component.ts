@@ -14,7 +14,7 @@ import { AngularFireObject } from 'angularfire2/database';
 export class BsNavbarComponent implements OnInit {
   appUser: AppUser;
   // shoppingCartItemCount: number;
-  cart$: Observable<ShoppingCart>;
+  cart$;
 
   constructor(private auth: AuthService, private shoppingCartService: ShoppingCartService) {
   }
