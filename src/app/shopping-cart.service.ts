@@ -21,7 +21,7 @@ export class ShoppingCartService {
   }
 
   // get cartid
-  async getCart() {
+  async getCart(): Promise<Observable<ShoppingCart>> {
     const cartId = await this.getOrCreateCartId();
     // send object of user's cart identified by cartId containg the items sub-object, which have a list of items
     return this.db.object('/shopping-carts/' + cartId).valueChanges().pipe(

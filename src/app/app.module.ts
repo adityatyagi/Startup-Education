@@ -1,3 +1,4 @@
+import { OrderService } from './order.service';
 import { ShoppingCartService } from './shopping-cart.service';
 import { ProductService } from './product.service';
 import { CategoryService } from './category.service';
@@ -71,7 +72,7 @@ import { ProductQuantityComponent } from './product-quantity/product-quantity.co
       {path: 'login', component: LoginComponent },
       // for logged in users
       {path: 'check-out', component: CheckOutComponent, canActivate: [AuthGuardService] },
-      {path: 'order-success', component: OrderSuccessComponent, canActivate: [AuthGuardService]  },
+      {path: 'order-success/:id', component: OrderSuccessComponent, canActivate: [AuthGuardService]  },
       {path: 'my/orders', component: MyOrdersComponent, canActivate: [AuthGuardService]  },
       // for admin
       {path: 'admin/products/new', component: ProductFormComponent, canActivate: [AuthGuardService, AdminAuthGuardService]  },
@@ -87,7 +88,8 @@ import { ProductQuantityComponent } from './product-quantity/product-quantity.co
     AdminAuthGuardService,
     CategoryService,
     ProductService,
-    ShoppingCartService
+    ShoppingCartService,
+    OrderService
   ],
   bootstrap: [AppComponent]
 })
