@@ -4,6 +4,7 @@ import { Product } from './models/product';
 import { take, map } from 'rxjs/operators';
 import { ShoppingCart } from './models/shopping-cart';
 import { Observable } from 'rxjs';
+import { ShoppingCartItem } from './models/shopping-cart-item';
 
 @Injectable({
   providedIn: 'root'
@@ -20,15 +21,13 @@ export class ShoppingCartService {
   }
 
   // get cartid
-  async getCart(): Promise<Observable<ShoppingCart>> {
+  async getCart() {
     const cartId = await this.getOrCreateCartId();
     // send object of user's cart identified by cartId containg the items sub-object, which have a list of items
     return this.db.object('/shopping-carts/' + cartId).valueChanges().pipe(
       map(x => {
         if (x) {
           return new ShoppingCart(x['items']);
-        } else {
-          return new ShoppingCart(x);
         }
       })
     );
