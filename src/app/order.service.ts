@@ -14,4 +14,12 @@ export class OrderService {
     this.shoppingCartService.clearCart();
     return result;
   }
+
+  getOrders() {
+    return this.db.list('/orders');
+  }
+
+  getOrdersByUser(userId: string) {
+    return this.db.list('/orders', ref => ref.orderByChild('userId'));
+  }
 }
